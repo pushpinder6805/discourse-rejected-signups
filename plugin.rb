@@ -50,7 +50,7 @@ after_initialize do
       create_result(:success, :rejected)
     end
 
-    def perform_delete_and_block_user(performed_by, args)
+    def perform_delete_user_block(performed_by, args)
       super
     end
   end

@@ -1,5 +1,6 @@
 import { on } from "@ember/modifier";
 import { fn } from "@ember/helper";
+import { i18n } from "discourse-i18n";
 
 <template>
   <section class="admin-detail">
