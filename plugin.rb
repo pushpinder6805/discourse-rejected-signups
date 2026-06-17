@@ -3,17 +3,19 @@
 # name: discourse-rejected-signups
 # about: Archive rejected signup approvals and allow staff to approve them later.
 # version: 0.1
-# authors: OpenAI
-# url: https://github.com/pushpinder6805/Resources-Lib
+# authors: raza
+# url: https://github.com/pushpinder6805/discourse-rejected-signups
+
+enabled_site_setting :rejected_signups_enabled
 
 after_initialize do
   module ::RejectedSignups
     PLUGIN_NAME = "discourse-rejected-signups"
 
     def self.archive_reviewable?(reviewable)
-      SiteSetting.must_approve_users? &&
+      SiteSetting.rejected_signups_enabled &&
+        SiteSetting.must_approve_users? &&
         reviewable.is_a?(::ReviewableUser) &&
-        !reviewable.is_a_suspect_user? &&
         reviewable.target.present? &&
         !reviewable.target.approved?
     end
@@ -46,6 +48,10 @@ after_initialize do
       end
 
       create_result(:success, :rejected)
+    end
+
+    def perform_delete_and_block_user(performed_by, args)
+      super
     end
   end
 

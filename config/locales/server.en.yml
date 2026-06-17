@@ -1,2 +1,3 @@
 en:
-  site_settings: {}
+  site_settings:
+    rejected_signups_enabled: "Enable rejected signup archiving and later approval"

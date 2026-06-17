@@ -14,7 +14,7 @@ class ::RejectedSignup < ActiveRecord::Base
   scope :recent_first, -> { order(rejected_at: :desc, created_at: :desc) }
 
   def self.archive_from_reviewable!(reviewable, performed_by, args = {})
-    user = reviewable.target
+    user = reviewable.target || reviewable.try(:target_user)
 
     record = find_or_initialize_by(reviewable_id: reviewable.id)
     record.user = user
