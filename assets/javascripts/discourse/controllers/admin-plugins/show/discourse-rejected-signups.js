@@ -1,10 +1,10 @@
 import Controller from "@ember/controller";
-import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
+import { tracked } from "@glimmer/tracking";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 
-export default class AdminPluginsRejectedSignupsController extends Controller {
+export default class AdminPluginsShowDiscourseRejectedSignupsController extends Controller {
   @tracked signups = [];
 
   setSignups(signups) {
@@ -14,7 +14,7 @@ export default class AdminPluginsRejectedSignupsController extends Controller {
   @action
   async approve(signup) {
     this.signups = this.signups.map((item) =>
-      item.id === signup.id ? { ...item, is_approving: true } : item
+      item.id === signup.id ? { ...item, isApproving: true } : item
     );
 
     try {
@@ -28,11 +28,11 @@ export default class AdminPluginsRejectedSignupsController extends Controller {
     } catch (error) {
       popupAjaxError(error);
       this.signups = this.signups.map((item) =>
-        item.id === signup.id ? { ...item, is_approving: false } : item
+        item.id === signup.id ? { ...item, isApproving: false } : item
       );
     } finally {
       this.signups = this.signups.map((item) =>
-        item.id === signup.id ? { ...item, is_approving: false } : item
+        item.id === signup.id ? { ...item, isApproving: false } : item
       );
     }
   }

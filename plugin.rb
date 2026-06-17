@@ -40,7 +40,7 @@ after_initialize do
   require_relative "app/models/rejected_signup"
   require_relative "app/controllers/admin/plugins/rejected_signups_controller"
 
-  add_admin_route "Rejected Signups", "rejected-signups"
+  add_admin_route "Rejected Signups", "discourse-rejected-signups"
 
   Discourse::Application.routes.append do
     get "/admin/plugins/rejected-signups" => "admin/plugins/rejected_signups#index"
