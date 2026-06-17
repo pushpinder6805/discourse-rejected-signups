@@ -12,6 +12,10 @@ after_initialize do
   module ::RejectedSignups
     PLUGIN_NAME = "discourse-rejected-signups"
 
+    def self.log(message)
+      Rails.logger.warn("[discourse-rejected-signups] #{message}")
+    end
+
     def self.archive_reviewable?(reviewable, action_id = nil)
       SiteSetting.rejected_signups_enabled &&
         SiteSetting.must_approve_users? &&
@@ -46,6 +50,13 @@ after_initialize do
 
   module ::RejectedSignupsReviewablePerformPatch
     def perform(performed_by, action_id, args = nil)
+      if target_type == "User"
+        ::RejectedSignups.log(
+          "Reviewable#perform type=#{self.class.name} id=#{id} action=#{action_id} " \
+            "status=#{status} target_id=#{target_id} approved=#{target&.approved?}",
+        )
+      end
+
       return super unless ::RejectedSignups.archive_reviewable?(self, action_id)
 
       args ||= {}
@@ -96,6 +107,9 @@ after_initialize do
       validate!
 
       ::RejectedSignup.archive_from_reviewable!(self, performed_by, args)
+      ::RejectedSignups.log(
+        "Archived reviewable id=#{id} target_id=#{target&.id} username=#{target&.username || payload&.dig("username")}",
+      )
 
       if args[:send_email] && SiteSetting.must_approve_users?
         Jobs::CriticalUserEmail.new.execute(
@@ -132,6 +146,11 @@ after_initialize do
 
   module ::RejectedSignupsUserDestroyerPatch
     def destroy(user, opts = {})
+      ::RejectedSignups.log(
+        "UserDestroyer#destroy user_id=#{user&.id} username=#{user&.username} " \
+          "reviewable_id=#{opts[:reviewable_id]} block_email=#{opts[:block_email]} block_ip=#{opts[:block_ip]}",
+      )
+
       if ::RejectedSignups.archive_user_destroy?(user, opts)
         reviewable = ::Reviewable.find_by(id: opts[:reviewable_id])
 
@@ -142,6 +161,10 @@ after_initialize do
             reviewable,
             @actor,
             { reject_reason: reviewable.reject_reason },
+          )
+
+          ::RejectedSignups.log(
+            "Archived from UserDestroyer reviewable_id=#{reviewable.id} user_id=#{user.id} username=#{user.username}",
           )
 
           return user
