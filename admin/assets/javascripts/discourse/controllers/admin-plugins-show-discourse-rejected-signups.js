@@ -4,12 +4,8 @@ import { tracked } from "@glimmer/tracking";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 
-export default class AdminPluginsShowDiscourseRejectedSignupsController extends Controller {
+export default class DiscourseRejectedSignupsController extends Controller {
   @tracked signups = [];
-
-  setSignups(signups) {
-    this.signups = signups;
-  }
 
   @action
   async approve(signup) {
@@ -27,9 +23,6 @@ export default class AdminPluginsShowDiscourseRejectedSignupsController extends 
       );
     } catch (error) {
       popupAjaxError(error);
-      this.signups = this.signups.map((item) =>
-        item.id === signup.id ? { ...item, isApproving: false } : item
-      );
     } finally {
       this.signups = this.signups.map((item) =>
         item.id === signup.id ? { ...item, isApproving: false } : item
