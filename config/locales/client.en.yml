@@ -1,0 +1,20 @@
+en:
+  js:
+    admin:
+      plugins:
+        rejected_signups:
+          title: "Rejected Signups"
+          subtitle: "Rejected signups archived for later approval"
+          empty: "No rejected signups have been archived yet."
+          approve: "Approve Now"
+          approving: "Approving..."
+          status_rejected: "Rejected"
+          status_approved_later: "Approved later"
+          columns:
+            username: "Username"
+            email: "Email"
+            rejected_at: "Rejected"
+            rejected_by: "Rejected By"
+            reason: "Reason"
+            status: "Status"
+            actions: "Actions"
