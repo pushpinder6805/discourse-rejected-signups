@@ -13,7 +13,7 @@ export default {
       api.addAdminPluginConfigurationNav("discourse-rejected-signups", [
         {
           label: "admin.plugins.rejected_signups.title",
-          route: "adminPlugins.show.discourse-rejected-signups",
+          route: "adminPlugins.show.discourse-rejected-signups-archive",
         },
       ]);
     });

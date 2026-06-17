@@ -4,7 +4,7 @@ import { tracked } from "@glimmer/tracking";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 
-export default class DiscourseRejectedSignupsController extends Controller {
+export default class DiscourseRejectedSignupsArchiveController extends Controller {
   @tracked signups = [];
 
   @action
