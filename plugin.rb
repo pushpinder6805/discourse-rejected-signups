@@ -21,6 +21,16 @@ after_initialize do
         !reviewable.target.approved? &&
         action_id.to_s == "delete_user"
     end
+
+    def self.archive_user_destroy?(user, opts = {})
+      SiteSetting.rejected_signups_enabled &&
+        SiteSetting.must_approve_users? &&
+        user.present? &&
+        !user.approved? &&
+        opts[:reviewable_id].present? &&
+        !opts[:block_email] &&
+        !opts[:block_ip]
+    end
   end
 
   require_relative "app/models/rejected_signup"
@@ -120,11 +130,37 @@ after_initialize do
     end
   end
 
+  module ::RejectedSignupsUserDestroyerPatch
+    def destroy(user, opts = {})
+      if ::RejectedSignups.archive_user_destroy?(user, opts)
+        reviewable = ::Reviewable.find_by(id: opts[:reviewable_id])
+
+        if reviewable.present? &&
+             (reviewable.target == user || reviewable.target_id == user.id ||
+               reviewable.target_created_by_id == user.id)
+          ::RejectedSignup.archive_from_reviewable!(
+            reviewable,
+            @actor,
+            { reject_reason: reviewable.reject_reason },
+          )
+
+          return user
+        end
+      end
+
+      super
+    end
+  end
+
   unless ::ReviewableUser.ancestors.include?(::RejectedSignupsReviewableUserPatch)
     ::ReviewableUser.prepend(::RejectedSignupsReviewableUserPatch)
   end
 
   unless ::Reviewable.ancestors.include?(::RejectedSignupsReviewablePerformPatch)
     ::Reviewable.prepend(::RejectedSignupsReviewablePerformPatch)
+  end
+
+  unless ::UserDestroyer.ancestors.include?(::RejectedSignupsUserDestroyerPatch)
+    ::UserDestroyer.prepend(::RejectedSignupsUserDestroyerPatch)
   end
 end
