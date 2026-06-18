@@ -40,14 +40,10 @@ after_initialize do
   require_relative "app/models/rejected_signup"
   require_relative "app/controllers/admin/plugins/rejected_signups_controller"
 
-  add_admin_route(
-    "admin.plugins.rejected_signups.title",
-    "discourse-rejected-signups",
-    use_new_show_route: true,
-  )
+  add_admin_route "admin.plugins.rejected_signups.title", "rejected-signups"
 
   Discourse::Application.routes.append do
-    get "/admin/plugins/rejected-signups" => "admin/plugins/rejected_signups#index"
+    get "/admin/plugins/rejected-signups" => "admin/plugins#index", constraints: StaffConstraint.new
     get "/admin/plugins/rejected-signups.json" => "admin/plugins/rejected_signups#index"
     put "/admin/plugins/rejected-signups/:id/approve" => "admin/plugins/rejected_signups#approve"
   end
