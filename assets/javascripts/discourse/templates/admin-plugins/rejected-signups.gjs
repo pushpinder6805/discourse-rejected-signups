@@ -19,7 +19,7 @@ export default class AdminPluginsRejectedSignups extends Component {
 
     try {
       const response = await ajax(
-        `/admin/plugins/rejected-signups/${signup.id}/approve`,
+        `/admin/plugins/discourse-rejected-signups/archive/${signup.id}/approve`,
         { type: "PUT" }
       );
 

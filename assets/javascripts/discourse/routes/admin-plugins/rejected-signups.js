@@ -3,6 +3,6 @@ import DiscourseRoute from "discourse/routes/discourse";
 
 export default class AdminPluginsRejectedSignupsRoute extends DiscourseRoute {
   model() {
-    return ajax("/admin/plugins/rejected-signups.json");
+    return ajax("/admin/plugins/discourse-rejected-signups/archive.json");
   }
 }
