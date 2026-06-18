@@ -43,9 +43,9 @@ after_initialize do
   add_admin_route "admin.plugins.rejected_signups.title", "rejected-signups"
 
   Discourse::Application.routes.append do
-    get "/admin/plugins/rejected-signups" => "admin/plugins#index", constraints: StaffConstraint.new
     get "/admin/plugins/rejected-signups.json" => "admin/plugins/rejected_signups#index"
     put "/admin/plugins/rejected-signups/:id/approve" => "admin/plugins/rejected_signups#approve"
+    get "/admin/plugins/rejected-signups" => "admin/plugins#index", constraints: StaffConstraint.new
   end
 
   module ::RejectedSignupsReviewablePerformPatch

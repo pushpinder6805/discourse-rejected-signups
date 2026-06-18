@@ -7,6 +7,7 @@ module ::Admin
 
       def index
         signups = ::RejectedSignup.includes(:user, :rejected_by, :approved_later_by).recent_first
+        ::RejectedSignups.log("Index returning count=#{signups.size}")
 
         render json: {
           rejected_signups: signups.map { |signup| serialize_signup(signup) },
